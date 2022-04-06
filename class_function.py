@@ -38,7 +38,8 @@ class Csv:
             print(self.clean_data(x))
 
 
-new_file = Csv()
-new_file.read_out_element()
+if __name__ == "__main__":
+    new_file = Csv()
+    new_file.read_out_element()
 
 #print(f"This is the current directory, which you are in: {os.getcwd()}")
