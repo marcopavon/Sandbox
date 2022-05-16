@@ -25,5 +25,8 @@ def update_csv_output():
     with open('../Sandbox/prime_output.csv', 'w') as my_file:
         my_file.write(pattern)
 
-
-
+with open('../Scripts/prime.csv', 'r') as f:
+    
+        # store in text variable
+        text = f.readlines()[-5:]
+        print(text, type(text))
