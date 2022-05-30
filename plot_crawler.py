@@ -12,7 +12,7 @@ update_csv_output()
 """
 
 # reading line by line
-with open('../Scripts/prime.csv', 'r') as f:
+with open('./Crawler/prime.csv', 'r') as f:
    
     # store in text variable
     text = f.read()
@@ -26,7 +26,7 @@ with open('../Scripts/prime.csv', 'r') as f:
 # Appending the changes in new file
 # It will create new file in the directory
 # and write the changes in the file.
-with open('../Sandbox/prime_output.csv', 'w') as my_file:
+with open('./Sandbox/prime_output.csv', 'w') as my_file:
     my_file.write(pattern)
 
 
@@ -36,8 +36,8 @@ from class_function import Csv
 #print(f"This is the current directory, which you are in: {os.getcwd()}")
 #print(f"Files in cwd: {os.listdir()}")
 # Initialize the lists for X and Y
-data = pd.read_csv("../Sandbox/prime_output.csv",  sep=',', index_col=False)
-data_delay = pd.read_csv("../Scripts/delay.csv",  sep=',', index_col=False)
+data = pd.read_csv("./Sandbox/prime_output.csv",  sep=',', index_col=False)
+data_delay = pd.read_csv("./Crawler/delay.csv",  sep=',', index_col=False)
 print(data)
 
 
