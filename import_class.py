@@ -40,9 +40,16 @@ cnx = mysql.connector.connect(user='ch74838_marco', password='Maverick-8',
 
 c=cnx.cursor()
 c.execute("""SELECT * FROM wp_users""")
-
-print(c.fetchall())
+sql_data = c.fetchall()
+#print(c.fetchall())
+print(sql_data)
 cnx.close()
+
+for data in sql_data:
+    print("#########")
+    print(data[1])
+
+
 
 """""
 import MySQLdb

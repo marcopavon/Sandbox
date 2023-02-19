@@ -1,44 +1,65 @@
-import csv
-from fileinput import filename
+# importing datetime module
+import datetime
+  
+# date in yyyy/mm/dd format
+d1 = datetime.datetime(2018, 5, 3)
+d2 = datetime.datetime(2018, 6, 1)
 
-
-test = {"Audi":{"color":"black","year":2000},
-        "BMW":{"color":"white","year":1998},
-        "Skoda":{"color":"white","year":1998},
-        "Skoda2":{"color": ["blue","yellow"],"year":1998},
+diction ={
+        "name":"The Palazzo",
+        "size": 120,
+        "extras":{
+                "pool":True,
+                "bbq":False
+        }
 }
 
-testList = ["Mercedes-Benz","Audi","BMW"]
+class Property:
+        def __init__(self,**kwargs):
+                for key, value in kwargs.items():
+                        print(key, '-', value)
+                        setattr(self, key, value)
+                self.plot = list(["a",""])
 
-def more(x):
-        print(x)
+        def create_list(self):
+                output = list([self.name,self.size])
+                return output
+
+        def get_name(self):
+                return self.name.upper()
 
 
-def add2csv(fileName,data):
-        with open(fileName,'a', encoding='utf-8', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(data)
 
 
-class Cars:
-        def adapt_list(self,input):
-                new_list = []
-                for x in input:
-                        new_list.append(x+" changed")
-                return new_list
-
-        def upper_case(self,list):
-                for entry in self.adapt_list(list):
-                        print(entry.upper())
+class Customer:
+        def __init__(self,name, year, house):
+                self.name = name
+                self.year = year
+                self.house = house
         
-        def printer(self,x):
-                print(x)
-
-        
+        def __str__(self):
+            return f"{self.name}, {str(self.year)}, {self.house}"
 
 
-x = Cars()
-new_cars = x.adapt_list(testList)
-x.printer(new_cars) 
- 
-x.upper_case(testList)
+prop_palazzo = Property(**diction)
+print(prop_palazzo.name)
+print(prop_palazzo.plot)
+print(prop_palazzo.get_name())
+print(prop_palazzo.create_list())
+
+prop_diamond = Property(name="diamong",size=134)
+print(prop_diamond.create_list())
+
+peter= Customer("Peter",2025,prop_diamond.name)
+
+print(peter)
+
+class Dynamic(Property):
+        def __init__(self):
+                self.static = False
+                self.name = "oski"
+
+
+new = Dynamic()
+
+print(new.get_name())

@@ -1,6 +1,7 @@
 import time
 import datetime
 import os
+import sys
 
 
 class Timer:
@@ -17,7 +18,7 @@ class Timer:
 
 
 class Csv:
-    csv_file =  "../Sandbox/test_file.csv"
+    csv_file =  os.path.join(sys.path[0], "test_file.csv")
 
     def read_out(self):
         f1 = open(self.csv_file, "r")
