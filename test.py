@@ -165,3 +165,33 @@ def runs():
     else:
         print("All Good")
     f1.close() """
+
+best = [555,303,20,23]
+
+def test():
+    #Add only values for fields, which will be appended to the csv
+    if "productid=56" in idd and idd["productid=56"]["duration"] != "ELVIA not listed":
+        fields =  idd["productid=56"]["date"], idd["productid=56"]["duration"], min(best)
+        print(fields)
+    elif "productid=29" in idd and idd["productid=29"]["duration"] != "ELVIA not listed":
+        fields =  idd["productid=29"]["date"], idd["productid=29"]["duration"], min(best)
+        print(fields)
+    elif idd["productid=29"]["duration"] == "ELVIA not listed" and idd["productid=56"]["duration"] == "ELVIA not listed":
+        fields =  idd["productid=29"]["date"], "ELVIA not listed", min(best)
+        print(fields)
+  
+
+
+
+idd = {"productid=29": {"duration": "ELVIA not listed","date": "2022-04-05"},"productid=56": {"duration": "ELVIA not listed","date": "2022-04-05"}}
+test()
+idd = {"productid=56": {"duration": "ELVIA not listed","date": "2022-04-05"},"productid=29": {"duration": "ELVIA not listed","date": "2022-04-05"}}
+test()
+idd = {"productid=29": {"duration": str(35),"date": "2022-04-05"},"productid=56": {"duration": "ELVIA not listed","date": "2022-04-05"}}
+test()
+idd = {"productid=56": {"duration": str(19),"date": "2022-04-05"},"productid=29": {"duration": "ELVIA not listed","date": "2022-04-05"}}
+test()
+idd = {"productid=29": {"duration": "ELVIA not listed","date": "2022-04-05"},"productid=56": {"duration": str(19),"date": "2022-04-05"}}
+test()
+idd = {"productid=56": {"duration": "ELVIA not listed","date": "2022-04-05"},"productid=29": {"duration": str(35),"date": "2022-04-05"}}
+test()
