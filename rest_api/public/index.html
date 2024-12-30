@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lead Capture Form</title>
+    <script>
+        // Function to validate postcode
+        function validatePostcode() {
+            var postcode = document.getElementById('postCode').value;
+            var regex = /^\d{4}$/;
+            return regex.test(postcode);
+        }
+
+        // Load data from postcode-lookup 
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('api/postcode-lookup')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch data');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Data fetched successfully:', data);
+                    populateDropdown(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching or processing data:', error);
+                });
+        });
+
+        // Populate drop-down based on API Response (JSON-File)
+        function populateDropdown(data) {
+            const dropdown = document.getElementById('dropdownList');
+            dropdown.innerHTML = ''; // Clear existing options
+
+            // Check if data is an object
+            if (typeof data === 'object' && data !== null) {
+                for (let key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const option = document.createElement('option');
+                        option.value = data[key].city // Assuming the property name is used as the value
+                        option.textContent = key; // Assuming the property value is used as the display text
+                        dropdown.appendChild(option);
+                    }
+                }
+            } else {
+                console.error('Data is not in the expected format:', data);
+            }
+        }
+
+
+        
+
+        // Function to handle form submission
+        function submitForm(event) {
+            event.preventDefault();
+            if (!validatePostcode()) {
+                alert('Postcode must be exactly 4 integers.');
+                return;
+            }
+
+            // Get the value of dataSources and data
+            var dataSources = document.getElementById('dataSources').value;
+            var data = dataSources !== '' ? dataSources : document.getElementById('data').value;
+
+            // Fetch API call for form submission
+            fetch('/leads', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    leadName: document.getElementById('leadName').value,
+                    postCode: document.getElementById('postCode').value,
+                    data: data
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                document.getElementById('leadForm').reset();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error submitting form');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2>Lead Capture Form</h2>
+    <form id="leadForm" onsubmit="submitForm(event)">
+        <label for="leadName">Lead Name:</label><br>
+        <input type="text" id="leadName" name="leadName" required><br>
+
+        <label for="postCode">Post Code:</label><br>
+        <input type="text" id="postCode" name="postCode" required pattern="\d{4}" title="Postcode must be 4 digits"><br>
+
+        <label for="dropdownList">Postcode List from JSON:</label><br>
+        <select for="dropdownList" id="dropdownList" name="dropdownList">
+
+        </select><br>
+
+        <label for="dataSources">Data sources:</label><br>
+        <select id="dataSources" name="dataSources">
+            <option value="">Select data source</option>
+            <option value="facebook">Facebook</option>
+            <option value="Comparis">Comparis</option>
+            <option value="Webseite">Webseite</option>
+            <option value="Inbound">Inbound</option>
+        </select>
+        <br>
+
+        <label for="data">Custom data sources:</label><br>
+        <textarea id="data" name="data"></textarea><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

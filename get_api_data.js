@@ -1,4 +1,5 @@
 //import fetch from "node-fetch";
+// Used for Browser Script
 
 const urlTest = "https://catfact.ninja/fact";
 
@@ -7,13 +8,14 @@ async function getData (api){
     const response = await fetch(api);
     var data = await response.json();
     //console.log("1st function");
-    console.log(data)
+    console.log(data["fact"])
     return data
     }
 
 
 getData(urlTest)
 
+console.log("########");
 
 //get request
 const url = "https://jsonplaceholder.typicode.com/posts/1";

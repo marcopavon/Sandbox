@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lead Capture Form</title>
+    <script>
+        // Function to validate postcode
+        /*
+        function validatePostcode() {
+            var postcode = document.getElementById('postCode').value;
+            var regex = /^\d{4}$/;
+            return regex.test(postcode);
+        }
+        */
+
+        // Function to handle form submission
+        function submitForm(event) {
+            event.preventDefault();
+            /*
+            if (!validatePostcode()) {
+                alert('Postcode must be exactly 4 integers.');
+                return;
+            }
+            */
+
+            // Fetch API call for form submission
+            fetch('/advisor-register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstname: document.getElementById('firstname').value,
+                    familyname: document.getElementById('familyname').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    ga: document.getElementById('ga').value,
+                    pwd: document.getElementById('pwd').value
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Data from Form:",data);
+                document.getElementById('advisorForm').reset();
+                alert('Submitting successful');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error submitting form');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2>Adding Advisors to the Backend</h2>
+    <form id="advisorForm" onsubmit="submitForm(event)">
+        <label for="firstname">First name:</label><br>
+        <input type="text" id="firstname" name="firstname" required><br>
+
+        <label for="familyname">Familyname:</label><br>
+        <input type="text" id="familyname" name="familyname" required><br>
+
+        <label for="email">E-Mail:</label><br>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="phone">Phone:</label><br>
+        <input type="tel" id="phone" name="phone" required><br>
+
+        <label for="ga">AS Nummer:</label><br>
+        <input type="text" id="ga" name="ga"><br>
+        
+        <label for="pwd">Password:</label><br>
+        <input type="password" id="pwd" name="pwd" required><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

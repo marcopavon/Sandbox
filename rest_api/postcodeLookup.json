@@ -1,0 +1,18 @@
+{
+    "1001": {
+      "city": "City Name 1",
+      "state": "State Name 1",
+      "country": "Country Name"
+    },
+    "1002": {
+      "city": "City Name 2",
+      "state": "State Name 2",
+      "country": "Country Name"
+    },
+    "1003": {
+      "city": "City Name 3",
+      "state": "State Name 3",
+      "country": "Country Name"
+    }
+  }
+  

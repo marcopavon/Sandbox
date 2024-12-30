@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisor Login</title>
+</head>
+<body>
+    <h2>Advisor Login</h2>
+    <form id="loginForm" action="/advisor-login" method="POST">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="pwd" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                console.log("start try")
+                // Log the body of the request
+                const response = await fetch(this.action, {
+                    method: this.method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data.accessToken);
+                    localStorage.setItem('accessToken', data.accessToken);
+                    window.location.href = '/advisor-data.html';
+                } else {
+                    alert('Invalid email or password');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('An error occurred during login');
+            }
+        });
+    </script>
+</body>
+</html>

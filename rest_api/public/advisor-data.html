@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advisor Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2 id="advisorName">Advisor Data</h2>
+    <div id="advisorData">
+        <!-- Advisor data will be displayed here -->
+    </div>
+
+    <script>
+
+        let leadsData = [];
+        let advisorsList = [];
+
+        function updateLeadState(leadId, newState) {
+            console.log(leadId, newState);
+            fetch('/update-lead-state', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id:leadId, state: newState }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                fetchLeads(); // Refetch leads to update the table
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateAdvisorForLead(leadId, advisorId) {
+            console.log(leadId, advisorId);
+            fetch('/update-advisor-dashboard', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({id: leadId, advisor: advisorId }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                        
+                        fetchLeads(); // Refetch leads to update the table display
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+
+
+        function deleteLead(leadId) {
+            if (confirm('Are you sure you want to delete this lead?')) {
+                fetch(`/leads/${leadId}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Lead deleted:', data);
+                        fetchLeads(); // Refetch leads to update the table
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        
+        function populateTable(data) {
+            const advisorDataElement = document.getElementById('advisorData');
+            advisorDataElement.innerHTML = ''; // Clear previous data
+
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            const headerRow = document.createElement('tr');
+            ['ID', 'First- & Surname', 'Post code', 'Data', 'State', 'Creation date', 'Actions'].forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                ['id', 'leadName', 'postCode', 'data', 'state', 'creationDate'].forEach(key => {
+                    const cell = document.createElement('td');
+                    cell.textContent = item[key];
+                    row.appendChild(cell);
+                });
+
+                // State dropdown
+                const stateCell = row.querySelector('td:nth-child(5)');
+                const stateSelect = document.createElement('select');
+                ['new', 'contacted', 'offer', 'sale', 'declined'].forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state.charAt(0).toUpperCase() + state.slice(1);
+                    if (item.state === state) {
+                        option.selected = true;
+                    }
+                    stateSelect.appendChild(option);
+                });
+                stateSelect.addEventListener('change', () => updateLeadState(item.id, stateSelect.value));
+                stateCell.textContent = '';
+                stateCell.appendChild(stateSelect);
+
+                // Delete button
+                const deleteCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => deleteLead(item.id));
+                deleteCell.appendChild(deleteButton);
+                row.appendChild(deleteCell);
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            advisorDataElement.appendChild(table);
+        }
+
+        // Fetch leads data and populate the table
+        async function fetchLeads() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (!accessToken) {
+                    window.location.href = '/advisor-login.html';
+                    return;
+                }
+
+                const response = await fetch('/advisor-data', {
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    populateTable(data);
+
+                     // Update the advisor name in the h2 element
+                     
+                    const advisorNameElement = document.getElementById('advisorName');
+                    if (data[0].hasOwnProperty('familyname')) {
+                        advisorNameElement.textContent = 'Advisor Data - Welcome: ' + data[0].firstname +" "+ data[0].familyname;
+                    } else {
+                        advisorNameElement.textContent = 'Advisor Data';
+                    }
+                    
+
+                } else {
+                    window.location.href = '/advisor-login.html';
+                }
+            } catch (error) {
+                console.error('Error fetching advisor data:', error);
+                alert('An error occurred while fetching advisor data');
+            }
+        }
+
+        // Fetch advisors data
+        async function fetchAdvisors() {
+            try {
+                const response = await fetch('/advisors');
+                if (response.ok) {
+                    advisorsList = await response.json();
+                    console.log(advisorsList);
+                } else {
+                    console.error('Failed to fetch advisors:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching advisors:', error);
+            }
+        }
+
+        // Fetch leads data and advisors data when the page loads
+        window.onload = async function() {
+            await fetchAdvisors();
+            await fetchLeads();
+        };
+    </script>
+</body>
+</html>

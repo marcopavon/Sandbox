@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lead Detail</title>
+    <script>
+        // Function to fetch and display lead details
+        function fetchAndDisplayLeadDetails() {
+            // Extract lead ID from URL query parameter 'id'
+            const urlParams = new URLSearchParams(window.location.search);
+            const leadId = urlParams.get('id');
+            
+            if (!leadId) {
+                document.getElementById('leadDetails').innerHTML = '<p>Lead ID not specified in the URL.</p>';
+                return;
+            }
+
+            // Fetch lead details from the backend
+            fetch('/get-lead-by-id/' + leadId)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if(data && data.length > 0) {
+                        const lead = data[0]; // Assuming the response is an array with one object
+                        // Dynamically create HTML content with lead details
+                        document.getElementById('leadDetails').innerHTML = `
+                            <h2>Lead Details: ${lead.leadName}</h2>
+                            <p><strong>Source:</strong> ${lead.data}</p>
+                            <p><strong>Postcode:</strong> ${lead.postCode}</p>
+                            <hr>
+                            <p><strong>State:</strong> ${lead.state}</p>
+                            <hr>
+                            <p><strong>Current Advisor:</strong> ${lead.familyname}</p>
+                            <p><strong>GA:</strong> ${lead.ga}</p>
+                            
+                            
+                        `;
+                    } else {
+                        document.getElementById('leadDetails').innerHTML = '<p>Lead not found.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching lead details:', error);
+                    document.getElementById('leadDetails').innerHTML = '<p>Error fetching lead details. Please try again later.</p>';
+                });
+        }
+    </script>
+</head>
+<body onload="fetchAndDisplayLeadDetails()">
+    <div id="leadDetails">
+        <p>Loading lead details...</p>
+    </div>
+</body>
+</html>
